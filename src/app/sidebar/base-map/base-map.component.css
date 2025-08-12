@@ -1,0 +1,37 @@
+.base-map-images {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.map-option {
+  cursor: pointer;
+  text-align: center;
+  width: 180px;
+  user-select: none;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.map-option:hover,
+.map-option:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.map-option img {
+  width: 175px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto; /* centers horizontally */
+}
+
+
+.label {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
+}

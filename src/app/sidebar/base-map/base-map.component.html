@@ -1,0 +1,14 @@
+<div class="base-map-images">
+  <div
+    *ngFor="let map of baseMaps"
+    class="map-option"
+    (click)="changeBaseMap(map.key)"
+    title="{{map.label}}"
+    tabindex="0"
+    role="button"
+    (keydown.enter)="changeBaseMap(map.key)"
+  >
+    <img [src]="map.imgSrc" [alt]="map.label" />
+    <div class="label">{{ map.label }}</div>
+  </div>
+</div>

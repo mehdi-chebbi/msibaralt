@@ -1,0 +1,93 @@
+<h3>Pick Date Range</h3>
+<form #dateRangeForm="ngForm">
+  <div style="display: flex; gap: 16px; max-width: 520px;">
+    <mat-form-field appearance="fill" style="flex: 1; min-width: 180px;" (click)="startPicker.open()">
+      <mat-label>Start Date</mat-label>
+      <input matInput
+             [matDatepicker]="startPicker"
+             name="startDate"
+             [(ngModel)]="startDate"
+             #startDateCtrl="ngModel"
+             [max]="maxDate"
+             required
+             readonly />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+      <mat-error *ngIf="startDateCtrl.invalid && startDateCtrl.touched">
+        Please enter a valid start date.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="flex: 1; min-width: 180px;" (click)="endPicker.open()">
+      <mat-label>End Date</mat-label>
+      <input matInput
+             [matDatepicker]="endPicker"
+             name="endDate"
+             [(ngModel)]="endDate"
+             #endDateCtrl="ngModel"
+             [min]="startDate"
+             [max]="maxDate"
+             required
+             readonly />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+      <mat-error *ngIf="endDateCtrl.invalid && endDateCtrl.touched">
+        Please enter a valid end date.
+      </mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div *ngIf="startDate && endDate" style="margin-top: 16px;">
+  <strong>Selected Date Range:</strong>
+  <p>{{ startDate | date:'mediumDate' }} - {{ endDate | date:'mediumDate' }}</p>
+</div>
+
+<h3 style="margin-top: 24px;">Layer Settings</h3>
+<div style="margin-top: 16px;">
+  <label><strong>Select Layers:</strong></label>
+  <div *ngFor="let layer of layers">
+    <mat-checkbox
+      class="custom-label"
+      [checked]="selectedLayers.includes(layer)"
+      (change)="onLayerToggle(layer, $event.checked)">
+      {{ layer }}
+    </mat-checkbox>
+  </div>
+</div>
+
+<h3 style="margin-top: 24px;">Statistics Settings</h3>
+<div style="margin-top: 16px;">
+  <label><strong>Select Statistics:</strong></label>
+  <div *ngFor="let reducer of reducers">
+    <mat-checkbox
+      class="custom-label"
+      [checked]="selectedReducers.includes(reducer.value)"
+      (change)="onReducerToggle(reducer.value, $event.checked)">
+      {{ reducer.label }}
+    </mat-checkbox>
+  </div>
+</div>
+
+<div style="max-width: 220px; margin-top: 24px; display: flex; flex-direction: column; gap: 16px;">
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading">
+    Submit
+  </button>
+</div>
+
+<div *ngIf="loading"
+     style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 40px; color: white;">
+  <mat-progress-spinner mode="indeterminate" diameter="60" strokeWidth="6" color="primary" style="color: white;"></mat-progress-spinner>
+  <div style="margin-top: 16px; font-size: 1.4rem; font-weight: 600; text-align: center; max-width: 400px;">
+    Please wait, this can take a few minutes based on the selected area and date.
+  </div>
+</div>
+
+<div *ngIf="!loading && lineChartData.datasets.length > 0"
+     style="display: block; width: 100%; max-width: 700px; margin-top: 20px; height: 700px;">
+  <canvas baseChart
+          [data]="lineChartData"
+          [options]="lineChartOptions"
+          chartType="line">
+  </canvas>
+</div>

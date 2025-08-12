@@ -1,0 +1,15 @@
+::ng-deep .custom-label .mdc-label {
+  color: #ffffff !important;
+}
+::ng-deep .custom-label .mdc-checkbox .mdc-checkbox__background {
+  border-color: #1976d2 !important; /* checkbox border color */
+}
+
+::ng-deep .custom-label .mdc-checkbox.mdc-checkbox--selected .mdc-checkbox__background {
+  background-color: #1976d2 !important; /* checkbox fill color when checked */
+  border-color: #1976d2 !important;
+}
+
+::ng-deep .custom-label .mdc-checkbox .mdc-checkbox__checkmark-path {
+  stroke: white !important; /* checkmark color */
+}

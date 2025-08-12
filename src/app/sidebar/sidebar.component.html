@@ -1,0 +1,51 @@
+<div class="sidebar" [class.open]="open" [class.closed]="!open">
+  <!-- Tabs nav -->
+  <nav class="tabs-nav">
+    <button
+      *ngFor="let tab of tabs"
+      (click)="setActiveTab(tab.id)"
+      [class.active]="activeTab === tab.id"
+      [title]="tab.label"
+    >
+      {{ tab.label }}
+      <span *ngIf="activeTab === tab.id" class="active-indicator"></span>
+    </button>
+  </nav>
+
+  <!-- Content area -->
+<div class="content-area">
+<h3>{{ activeTabLabel }}</h3>
+    <ng-container [ngSwitch]="activeTab">
+      <app-base-map *ngSwitchCase="'baseMap'"></app-base-map>
+<app-ogc-view *ngSwitchCase="'ogcView'"></app-ogc-view>
+<app-statistiques *ngSwitchCase="'statistiques'"></app-statistiques>
+    <!-- <div *ngSwitchCase="'download'">Download Images Content Here</div> -->
+    </ng-container>
+  </div>
+</div>
+
+<!-- Toggle button -->
+<div
+  class="toggle-btn"
+  (click)="toggleSidebar()"
+  [title]="open ? 'Close Sidebar' : 'Open Sidebar'"
+>
+  <svg *ngIf="open" width="16" height="24" viewBox="0 0 16 24" fill="none">
+    <path
+      d="M12 2L4 12L12 22"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+  <svg *ngIf="!open" width="16" height="24" viewBox="0 0 16 24" fill="none">
+    <path
+      d="M4 2L12 12L4 22"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</div>

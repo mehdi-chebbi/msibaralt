@@ -1,0 +1,6 @@
+#map {
+  height: calc(100vh - 80px);  /* Full viewport height minus navbar height */
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,49 @@
+.navbar {
+  background: linear-gradient(90deg, #4b6cb7, #182848);
+  height: 80px;                     /* Slightly taller than logo for spacing */
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+/* Center nav links horizontally */
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Nav link styling */
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar a:hover,
+.navbar a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffdd57;
+  text-decoration: underline;
+}
+
+/* Logo on far right */
+.logo {
+  flex-shrink: 0;
+}
+
+.logo img {
+  width: 150px;
+  height: 71px;
+  object-fit: contain;
+  display: block;
+}
