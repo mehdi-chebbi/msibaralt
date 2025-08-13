@@ -21,15 +21,3 @@
   </div>
 </div>
 
-<div
-  class="toggle-btn"
-  (click)="toggleSidebar()"
-  [title]="open ? 'Close Panel' : 'Open Panel'"
->
-  <svg *ngIf="open" width="16" height="24" viewBox="0 0 16 24" fill="none">
-    <path d="M12 2L4 12L12 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-  </svg>
-  <svg *ngIf="!open" width="16" height="24" viewBox="0 0 16 24" fill="none">
-    <path d="M4 2L12 12L4 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-  </svg>
-</div>

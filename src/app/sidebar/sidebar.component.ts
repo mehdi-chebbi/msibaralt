@@ -17,7 +17,7 @@ interface Tab {
   styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent {
-  open = true;
+  open = true; // will be ignored in fixed mode
   activeTab = 'baseMap';
   fade = true;
 
