@@ -10,28 +10,32 @@
   width: 180px;
   user-select: none;
   border: 2px solid transparent;
-  border-radius: 6px;
-  transition: border-color 0.2s ease;
+  border-radius: 12px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .map-option:hover,
 .map-option:focus {
-  border-color: #007bff;
+  border-color: #2563eb;
   outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 .map-option img {
   width: 175px;
   height: 150px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 10px;
   display: block;
-  margin: 0 auto; /* centers horizontally */
+  margin: 8px auto 0 auto;
 }
 
-
 .label {
-  margin-top: 6px;
-  font-size: 16px;
-  font-weight: 600;
+  margin: 10px 0 12px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
 }

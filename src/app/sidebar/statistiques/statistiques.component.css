@@ -1,15 +1,17 @@
 ::ng-deep .custom-label .mdc-label {
-  color: #ffffff !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
 }
+
 ::ng-deep .custom-label .mdc-checkbox .mdc-checkbox__background {
-  border-color: #1976d2 !important; /* checkbox border color */
+  border-color: #2563eb !important;
 }
 
 ::ng-deep .custom-label .mdc-checkbox.mdc-checkbox--selected .mdc-checkbox__background {
-  background-color: #1976d2 !important; /* checkbox fill color when checked */
-  border-color: #1976d2 !important;
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
 }
 
 ::ng-deep .custom-label .mdc-checkbox .mdc-checkbox__checkmark-path {
-  stroke: white !important; /* checkmark color */
+  stroke: white !important;
 }
