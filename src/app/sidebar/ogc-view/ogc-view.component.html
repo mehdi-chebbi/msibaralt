@@ -48,6 +48,13 @@
     <input matInput type="number" [(ngModel)]="cloud_percentage" min="0" max="100" step="1" placeholder="0 - 100" />
   </mat-form-field>
 </div>
+
+<h3>Overlay Opacity</h3>
+<div style="width: 100%; max-width: 320px; display: flex; align-items: center; gap: 10px;">
+  <input type="range" min="0" max="1" step="0.05" [(ngModel)]="overlayOpacity" (change)="onOpacityChange()" style="flex:1" />
+  <span>{{ overlayOpacity | number:'1.0-2' }}</span>
+</div>
+
 <!-- Submit button row -->
 <div style="width: 100%; display: flex; justify-content: flex-end; gap: 12px; margin-top: 4px;">
   <button mat-raised-button color="primary" (click)="onSubmit()">

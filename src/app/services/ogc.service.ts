@@ -24,6 +24,9 @@ export class OgcService {
   private wmsUrlSubject = new BehaviorSubject<string | null>(null); // ✅ NEW
   wmsUrl$ = this.wmsUrlSubject.asObservable();                      // ✅ NEW
 
+  private opacitySubject = new BehaviorSubject<number>(1);          // ✅ NEW
+  opacity$ = this.opacitySubject.asObservable();                    // ✅ NEW
+
   updateParams(params: OgcParams) {
     this.paramsSubject.next(params);
   }
@@ -34,5 +37,10 @@ export class OgcService {
 
   getWmsUrl(): string | null {     // ✅ NEW
     return this.wmsUrlSubject.getValue();
+  }
+
+  setOpacity(value: number) {       // ✅ NEW
+    const clamped = Math.min(1, Math.max(0, value));
+    this.opacitySubject.next(clamped);
   }
 }

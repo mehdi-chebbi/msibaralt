@@ -2,4 +2,7 @@
   <div id="map"></div>
   <app-sidebar></app-sidebar>
   <div class="map-status" *ngIf="statusText">{{ statusText }}</div>
+  <div class="legend" *ngIf="legendUrl">
+    <img [src]="legendUrl" alt="Legend" />
+  </div>
 </div>

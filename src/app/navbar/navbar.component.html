@@ -7,4 +7,8 @@
     <li><a routerLink="/map" routerLinkActive="active">Map</a></li>
     <li><a routerLink="/about" routerLinkActive="active">About</a></li>
   </ul>
+  <div class="actions">
+    <button class="share" (click)="share()">Share</button>
+    <span class="copied" *ngIf="copied">Copied!</span>
+  </div>
 </nav>
