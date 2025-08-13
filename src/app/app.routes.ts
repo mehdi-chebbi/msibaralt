@@ -8,6 +8,9 @@ export const routes: Routes = [
   // Your full‑screen map page
   { path: 'map', component: MapComponent },
 
+  // About page
+  { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+
   // Wildcard route (optional): redirect any unknown URL back to /map
   { path: '**', redirectTo: 'map' }
 ];

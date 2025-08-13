@@ -1,0 +1,30 @@
+.about {
+  padding: 80px 24px 24px 24px; /* below navbar */
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  color: #1f2937;
+}
+
+.hero p {
+  margin: 0 0 16px 0;
+  color: #4b5563;
+}
+
+.content h2 {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.content p, .content li {
+  color: #374151;
+}
+
+.content ul {
+  padding-left: 18px;
+}
