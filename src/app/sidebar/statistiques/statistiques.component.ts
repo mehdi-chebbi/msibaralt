@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import Swal from 'sweetalert2';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { CommonModule } from '@angular/common';
 import { GeometryService } from '../../services/geometry.service';
@@ -34,7 +34,8 @@ import { ChartConfiguration, ChartOptions, ChartDataset } from 'chart.js';
     MatButtonModule,
     MatCheckboxModule,
     NgChartsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   templateUrl: './statistiques.component.html',
   styleUrls: ['./statistiques.component.css']
@@ -65,46 +66,44 @@ export class StatistiquesComponent {
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
-      maintainAspectRatio: false,   // <--- add this line
+    maintainAspectRatio: false,
+    animation: false,
+    spanGaps: true,
+    elements: { point: { radius: 0 } },
+    interaction: { mode: 'nearest', intersect: false },
     plugins: {
       legend: {
-        labels: {
-          color: 'white'
-        }
+        labels: { color: '#111827', usePointStyle: true }
       },
       tooltip: {
         enabled: true,
-        backgroundColor: '#333',
-        titleColor: 'white',
-        bodyColor: 'white'
+        backgroundColor: '#111827',
+        titleColor: '#f9fafb',
+        bodyColor: '#f9fafb'
+      },
+      decimation: {
+        enabled: true,
+        algorithm: 'lttb',
+        samples: 500
       }
     },
     scales: {
       x: {
-        ticks: {
-          color: 'white'
-        },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.2)'
-        }
+        ticks: { color: '#374151', autoSkip: true, maxRotation: 0 },
+        grid: { color: 'rgba(17,24,39,0.08)' }
       },
       y: {
-        min: -1,
-        max: 1,
         beginAtZero: false,
-        ticks: {
-          color: 'white'
-        },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.2)'
-        }
+        ticks: { color: '#374151' },
+        grid: { color: 'rgba(17,24,39,0.08)' }
       }
     }
   };
 
   constructor(
     private geometryService: GeometryService,
-    private http: HttpClient
+    private http: HttpClient,
+    private snackBar: MatSnackBar
   ) {
     this.geometryService.bounds$.subscribe(bounds => {
       this.drawnBounds = bounds;
@@ -134,135 +133,96 @@ export class StatistiquesComponent {
     }
   }
 
-async onSubmit(): Promise<void> {
-  const missingFields: string[] = [];
+  async onSubmit(): Promise<void> {
+    const missingFields: string[] = [];
 
-  if (!this.drawnBounds) {
-    missingFields.push('polygon');
-  }
+    if (!this.drawnBounds) missingFields.push('polygon');
+    if (!this.startDate || !this.endDate) missingFields.push('date range');
+    if (this.selectedLayers.length === 0) missingFields.push('layer selection');
+    if (this.selectedReducers.length === 0) missingFields.push('statistics selection');
 
-  if (!this.startDate || !this.endDate) {
-    missingFields.push('date range');
-  }
-
-  if (this.selectedLayers.length === 0) {
-    missingFields.push('layer selection');
-  }
-
-  if (this.selectedReducers.length === 0) {
-    missingFields.push('statistics selection');
-  }
-
-  if (missingFields.length > 0) {
-    const message = 'Please complete the following before submitting:\n\n' +
-      missingFields.map(field => `• ${field}`).join('\n');
-
-    Swal.fire({
-      icon: 'warning',
-      title: 'Missing Fields',
-      text: message,
-      customClass: {
-        popup: 'swal2-border-radius' // optional styling
-      }
-    });
-
-    return;
-  }
-
-  const southWest = this.drawnBounds!.getSouthWest();
-  const northEast = this.drawnBounds!.getNorthEast();
-
-  const geom = {
-    type: 'Polygon',
-    coordinates: [[
-      [southWest.lng, southWest.lat],
-      [northEast.lng, southWest.lat],
-      [northEast.lng, northEast.lat],
-      [southWest.lng, northEast.lat],
-      [southWest.lng, southWest.lat]
-    ]]
-  };
-
-  this.loading = true;
-  this.lineChartData = { labels: [], datasets: [] };
-
-  try {
-    const labelsSet = new Set<string>();
-    const datasets: ChartDataset<'line'>[] = [];
-
-    for (const reducer of this.selectedReducers) {
-      const baseUrl = `http://192.168.1.17:5001/${reducer}`;
-      let params = new HttpParams()
-        .set('geom', JSON.stringify(geom))
-        .set('start_date', this.startDate!.toISOString().split('T')[0])
-        .set('end_date', this.endDate!.toISOString().split('T')[0]);
-
-      for (const layer of this.selectedLayers) {
-        params = params.append('layers', layer);
-      }
-
-      // Sequential request - wait for this one to complete before continuing
-      const response = await this.http.get<{ [layer: string]: { [date: string]: number } }>(baseUrl, { params }).toPromise();
-
-      Object.entries(response ?? {}).forEach(([layer, data]) => {
-        const sortedDates = Object.keys(data ?? {}).sort();
-        sortedDates.forEach(date => labelsSet.add(date));
-        const values = sortedDates.map(date => data?.[date] ?? 0);
-
-        datasets.push({
-          type: 'line',
-          label: `${layer} (${reducer})`,
-          data: values,
-          fill: false,
-          borderColor: this.getColorForLayerAndReducer(layer, reducer),
-          backgroundColor: 'white',
-          pointBorderColor: 'white',
-          pointBackgroundColor: 'white',
-          tension: 0.1,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          borderWidth: 2
-        });
-      });
+    if (missingFields.length > 0) {
+      this.snackBar.open(`Please complete: ${missingFields.join(', ')}`, 'Close', { duration: 3000 });
+      return;
     }
 
-    const sortedLabels = Array.from(labelsSet).sort();
+    const southWest = this.drawnBounds!.getSouthWest();
+    const northEast = this.drawnBounds!.getNorthEast();
 
-    this.lineChartData = {
-      labels: sortedLabels,
-      datasets
+    const geom = {
+      type: 'Polygon',
+      coordinates: [[
+        [southWest.lng, southWest.lat],
+        [northEast.lng, southWest.lat],
+        [northEast.lng, northEast.lat],
+        [southWest.lng, northEast.lat],
+        [southWest.lng, southWest.lat]
+      ]]
     };
-  } catch (error) {
-    console.error('❌ Error fetching data:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'There was an error fetching data. Please try again later.'
-    });
-  } finally {
-    this.loading = false;
-  }
-}
 
+    this.loading = true;
+    this.lineChartData = { labels: [], datasets: [] };
+
+    try {
+      const labelsSet = new Set<string>();
+      const datasets: ChartDataset<'line'>[] = [];
+
+      for (const reducer of this.selectedReducers) {
+        const baseUrl = `http://192.168.1.17:5001/${reducer}`;
+        let params = new HttpParams()
+          .set('geom', JSON.stringify(geom))
+          .set('start_date', this.startDate!.toISOString().split('T')[0])
+          .set('end_date', this.endDate!.toISOString().split('T')[0]);
+
+        for (const layer of this.selectedLayers) {
+          params = params.append('layers', layer);
+        }
+
+        const response = await this.http.get<{ [layer: string]: { [date: string]: number } }>(baseUrl, { params }).toPromise();
+
+        Object.entries(response ?? {}).forEach(([layer, data]) => {
+          const sortedDates = Object.keys(data ?? {}).sort();
+          sortedDates.forEach(date => labelsSet.add(date));
+          const values = sortedDates.map(date => data?.[date] ?? 0);
+
+          const color = this.getColorForLayerAndReducer(layer, reducer);
+          datasets.push({
+            type: 'line',
+            label: `${layer} (${reducer})`,
+            data: values,
+            fill: false,
+            borderColor: color,
+            backgroundColor: color,
+            tension: 0.2,
+            pointRadius: 0,
+            borderWidth: 2
+          });
+        });
+      }
+
+      const sortedLabels = Array.from(labelsSet).sort();
+
+      this.lineChartData = {
+        labels: sortedLabels,
+        datasets
+      };
+
+      this.snackBar.open('Statistics loaded', '', { duration: 1500 });
+    } catch (error) {
+      console.error('❌ Error fetching data:', error);
+      this.snackBar.open('Error fetching data. Please try again later.', 'Close', { duration: 3000 });
+    } finally {
+      this.loading = false;
+    }
+  }
 
   private getColorForLayerAndReducer(layer: string, reducer: string): string {
-    // You can customize colors here, or use a color library
-    const baseColors: { [key: string]: string } = {
-      NDVI: 'white',
-      NDWI: 'green'
-    };
-
     const reducerColors: { [key: string]: string } = {
-      mean: '#2196F3',  // blue
-      min: '#4CAF50',   // green
-      max: '#F44336',   // red
-      std: '#FF9800'     // orange
+      mean: '#2563eb',
+      min: '#16a34a',
+      max: '#ef4444',
+      std: '#f59e0b'
     };
-
-    const baseColor = baseColors[layer] ?? 'gray';
-    const reducerColor = reducerColors[reducer] ?? 'black';
-
-    // For better visual separation, return reducer color here
-    return reducerColor;
+    return reducerColors[reducer] ?? '#111827';
   }
 }
