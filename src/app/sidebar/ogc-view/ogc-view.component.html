@@ -1,5 +1,5 @@
 <h3>Pick Date Range</h3>
-<div style="display: flex; gap: 16px; max-width: 520px;">
+<div style="display: flex; gap: 12px; width: 100%; flex-wrap: wrap;">
   <mat-form-field appearance="fill" style="flex: 1; min-width: 180px;" (click)="startPicker.open()">
     <mat-label>Start Date</mat-label>
     <input matInput
@@ -30,7 +30,7 @@
 </div>
 
 <h3 >Layer Settings</h3>
-<div style="max-width: 220px; ">
+<div style="width: 100%; max-width: 320px;">
   <mat-form-field appearance="fill" style="min-width: 200px;">
     <mat-label>Select Layer</mat-label>
     <mat-select [(ngModel)]="selectedLayer">
@@ -42,33 +42,24 @@
 </div>
 
 <h3>Cloud Percentage</h3>
-<div style="max-width: 220px;">
-  <mat-form-field appearance="fill" style="min-width: 200px;">
-    <mat-label>Percentage</mat-label>
-    <input matInput
-           type="number"
-           [(ngModel)]="cloud_percentage"
-           min="0"
-           max="100"
-           step="1"
-           placeholder="Enter percentage" />
+<div style="width: 100%; max-width: 320px;">
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Cloud %</mat-label>
+    <input matInput type="number" [(ngModel)]="cloud_percentage" min="0" max="100" step="1" placeholder="0 - 100" />
   </mat-form-field>
 </div>
 <!-- Submit button row -->
-<div style="width: 100%; display: flex; justify-content: center; gap: 16px;">
-  <button mat-raised-button
-          (click)="onSubmit()"
-          style="padding: 12px 24px; font-size: 16px; min-width: 140px; background-color: gold; color: black;">
+<div style="width: 100%; display: flex; justify-content: flex-end; gap: 12px; margin-top: 4px;">
+  <button mat-raised-button color="primary" (click)="onSubmit()">
     Submit
   </button>
 </div>
 
 <!-- Download section under Submit button -->
-<div style="margin-top: 32px; padding: 16px; border: 1px solid #ccc; border-radius: 8px; max-width: 400px;">
-  <h3>Want to download the image?</h3>
+<div style="margin-top: 16px; padding: 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px;">
+  <h3 style="margin-top: 0">Download</h3>
 
-  <!-- Format selector -->
-  <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+  <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 8px;">
     <mat-label>Output Format</mat-label>
     <mat-select [(ngModel)]="selectedFormat">
       <mat-option *ngFor="let format of formats" [value]="format">
@@ -77,9 +68,7 @@
     </mat-select>
   </mat-form-field>
 
-  <!-- Log WMS button below format selector -->
-  <button mat-raised-button
-          (click)="logWmsUrl()"
-          style="width: 100%; padding: 12px 24px; font-size: 16px; background-color: gold; color: black;">
-Download Image  </button>
+  <button mat-raised-button color="accent" (click)="logWmsUrl()" style="width: 100%">
+    Download Image
+  </button>
 </div>

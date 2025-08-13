@@ -1,0 +1,68 @@
+.overlay-toolbar {
+  position: fixed;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1100;
+}
+
+.overlay-toolbar button {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.overlay-toolbar button.active {
+  outline: 2px solid #115293;
+}
+
+.panel {
+  position: fixed;
+  right: 72px;
+  top: 16px;
+  width: 420px;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  overflow: hidden;
+  z-index: 1050;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: #f9fafb;
+}
+
+.panel-header .title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.panel-header .close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.panel-body {
+  padding: 12px;
+  overflow: auto;
+}
