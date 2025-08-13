@@ -5,10 +5,12 @@ import { Subscription } from 'rxjs';
 import { BaseMapService } from '../../services/base-map.service';
 import { OgcService, OgcParams } from '../../services/ogc.service';
 import { GeometryService } from '../../services/geometry.service'; // ✅ NEW IMPORT
+import { SidebarComponent } from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-map',
   standalone: true,
+  imports: [SidebarComponent],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
 })
@@ -82,10 +84,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.drawnItems = new L.FeatureGroup();
     this.map.addLayer(this.drawnItems);
 
-    L.control.zoom({ position: 'topright' }).addTo(this.map);
+    L.control.zoom({ position: 'topleft' }).addTo(this.map);
 
     const drawControl = new L.Control.Draw({
-      position: 'topright',
+      position: 'topleft',
       edit: { featureGroup: this.drawnItems },
       draw: {
         polygon: {},
