@@ -12,11 +12,13 @@
   right: 0;
   bottom: 0;
 }
+#map .map-status { position: absolute; }
 
 .map-status {
-  position: fixed;
-  left: 420px;
-  bottom: 10px;
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
   background: rgba(17,24,39,0.92);
   color: #f9fafb;
   padding: 6px 10px;

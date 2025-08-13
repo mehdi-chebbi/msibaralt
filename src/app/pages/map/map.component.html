@@ -1,5 +1,6 @@
 <div class="map-page">
-  <div id="map"></div>
+  <div id="map">
+    <div class="map-status" *ngIf="statusText">{{ statusText }}</div>
+  </div>
   <app-sidebar></app-sidebar>
-  <div class="map-status" *ngIf="statusText">{{ statusText }}</div>
 </div>
