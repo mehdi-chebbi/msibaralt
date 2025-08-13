@@ -6,11 +6,12 @@ import { BaseMapService } from '../../services/base-map.service';
 import { OgcService, OgcParams } from '../../services/ogc.service';
 import { GeometryService } from '../../services/geometry.service'; // ✅ NEW IMPORT
 import { SidebarComponent } from '../../sidebar/sidebar.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [SidebarComponent],
+  imports: [CommonModule, SidebarComponent],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
 })
@@ -25,6 +26,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private lastDrawnBounds: L.LatLngBounds | null = null;
 
   private defaultCenter: L.LatLngExpression = [31.76299759769429, 9.7998046875];
+
+  // Enhancements: track base map name and status text
+  private currentBaseName: string = 'OpenStreetMap';
+  statusLat: number | null = null;
+  statusLng: number | null = null;
+  zoomLevel: number = 0;
+  private locateMarker: L.Marker | null = null;
 
   constructor(
     private baseMapService: BaseMapService,
@@ -67,16 +75,36 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }),
     };
 
-    // Add default base layer
-    this.currentBaseLayer = this.baseMaps['OpenStreetMap'];
+    // Initial state from URL, if any
+    const qs = new URLSearchParams(window.location.search);
+    const urlLayer = qs.get('layer');
+    const urlLat = parseFloat(qs.get('lat') || '');
+    const urlLng = parseFloat(qs.get('lng') || '');
+    const urlZ = parseInt(qs.get('z') || '', 10);
+
+    // Add base layer (URL layer if valid, else default OSM)
+    if (urlLayer && this.baseMaps[urlLayer]) {
+      this.currentBaseLayer = this.baseMaps[urlLayer];
+      this.currentBaseName = urlLayer;
+    } else {
+      this.currentBaseLayer = this.baseMaps['OpenStreetMap'];
+      this.currentBaseName = 'OpenStreetMap';
+    }
     this.currentBaseLayer.addTo(this.map);
+
+    // Apply URL center/zoom if valid
+    if (!Number.isNaN(urlLat) && !Number.isNaN(urlLng) && !Number.isNaN(urlZ)) {
+      this.map.setView([urlLat, urlLng], urlZ);
+    }
 
     // Switch base map
     this.baseMapSubscription = this.baseMapService.baseMap$.subscribe((mapName) => {
       if (this.baseMaps[mapName]) {
         this.map.removeLayer(this.currentBaseLayer);
         this.currentBaseLayer = this.baseMaps[mapName];
+        this.currentBaseName = mapName;
         this.currentBaseLayer.addTo(this.map);
+        this.updateUrlFromMap();
       }
     });
 
@@ -100,6 +128,40 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
     this.map.addControl(drawControl);
 
+    // Scale control
+    L.control.scale({ position: 'bottomleft', imperial: false }).addTo(this.map);
+
+    // Custom locate control (top-right)
+    const self = this;
+    const LocateControl = (L.Control as any).extend({
+      options: { position: 'topright' },
+      onAdd() {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        const link = L.DomUtil.create('a', '', container);
+        link.href = '#';
+        link.title = 'Locate me';
+        link.innerHTML = '⌖';
+        L.DomEvent.on(link, 'click', L.DomEvent.stop)
+          .on(link, 'click', () => self.locateMe());
+        return container;
+      }
+    });
+    this.map.addControl(new LocateControl());
+
+    // Mouse position + zoom status
+    this.zoomLevel = this.map.getZoom();
+    this.map.on('mousemove', (e: L.LeafletMouseEvent) => {
+      this.statusLat = e.latlng.lat;
+      this.statusLng = e.latlng.lng;
+    });
+    this.map.on('zoomend', () => {
+      this.zoomLevel = this.map.getZoom();
+      this.updateUrlFromMap();
+    });
+    this.map.on('moveend', () => {
+      this.updateUrlFromMap();
+    });
+
     this.map.on(L.Draw.Event.CREATED, (e: any) => {
       const layer = e.layer;
       this.drawnItems.clearLayers(); // Only one polygon at a time
@@ -119,6 +181,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.ogcParamsSubscription = this.ogcService.params$.subscribe((params: OgcParams) => {
       this.updateMapWithParams(params);
     });
+  }
+
+  get statusText(): string {
+    if (this.statusLat === null || this.statusLng === null) return '';
+    return `${this.statusLat.toFixed(5)}, ${this.statusLng.toFixed(5)} | z ${this.zoomLevel}`;
+  }
+
+  private updateUrlFromMap(): void {
+    const center = this.map.getCenter();
+    const z = this.map.getZoom();
+    const params = new URLSearchParams(window.location.search);
+    params.set('lat', center.lat.toFixed(5));
+    params.set('lng', center.lng.toFixed(5));
+    params.set('z', String(z));
+    params.set('layer', this.currentBaseName);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    history.replaceState({}, '', newUrl);
+  }
+
+  private locateMe(): void {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation not available');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const latlng: L.LatLngExpression = [pos.coords.latitude, pos.coords.longitude];
+      if (this.locateMarker) {
+        this.map.removeLayer(this.locateMarker);
+      }
+      this.locateMarker = L.marker(latlng);
+      this.locateMarker.addTo(this.map);
+      this.map.setView(latlng, Math.max(this.map.getZoom(), 10));
+    }, (err) => {
+      console.warn('Geolocation error', err);
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
   }
 
   updateMapWithParams(params: OgcParams) {
@@ -155,7 +252,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     console.log('WMS Image URL:', imageUrl);
     console.log('Using BBOX:', bbox);
-this.ogcService.setWmsUrl(imageUrl); // ✅ Store WMS URL
+    this.ogcService.setWmsUrl(imageUrl); // ✅ Store WMS URL
 
     this.map.fitBounds(this.lastDrawnBounds);
   }
