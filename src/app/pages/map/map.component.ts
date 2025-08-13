@@ -49,6 +49,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       zoomControl: false,
     });
 
+    // Fix Leaflet default marker icons to point to bundled assets
+    (L.Icon.Default as any).mergeOptions({
+      iconRetinaUrl: '/assets/leaflet-images/marker-icon-2x.png',
+      iconUrl: '/assets/leaflet-images/marker-icon.png',
+      shadowUrl: '/assets/leaflet-images/marker-shadow.png',
+    });
+
     // Define base maps
     this.baseMaps = {
       'NDVI': L.tileLayer.wms('https://sh.dataspace.copernicus.eu/ogc/wms/2e44e6fc-1f1c-4258-bd09-8a15c317f604', {
