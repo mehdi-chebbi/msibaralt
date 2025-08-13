@@ -22,8 +22,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private baseMaps!: { [key: string]: L.TileLayer };
   private baseMapSubscription!: Subscription;
   private ogcParamsSubscription!: Subscription;
-  private opacitySubscription!: Subscription; // ✅ NEW
-  private wmsUrlSubscription!: Subscription;  // ✅ NEW
   private imageOverlay: L.ImageOverlay | null = null;
   private lastDrawnBounds: L.LatLngBounds | null = null;
 
@@ -36,7 +34,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   zoomLevel: number = 0;
   private locateMarker: L.Marker | null = null;
 
-  private latestWmsUrl: string | null = null; // ✅ NEW
 
   constructor(
     private baseMapService: BaseMapService,
@@ -186,32 +183,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.updateMapWithParams(params);
     });
 
-    // Listen for WMS URL updates (for legend)
-    this.wmsUrlSubscription = this.ogcService.wmsUrl$.subscribe(url => {
-      this.latestWmsUrl = url;
-    });
-
-    // Listen for opacity updates
-    this.opacitySubscription = this.ogcService.opacity$.subscribe(opacity => {
-      if (this.imageOverlay) {
-        this.imageOverlay.setOpacity(opacity);
-      }
-    });
   }
 
   get statusText(): string {
     if (this.statusLat === null || this.statusLng === null) return '';
     return `${this.statusLat.toFixed(5)}, ${this.statusLng.toFixed(5)} | z ${this.zoomLevel}`;
-  }
-
-  get legendUrl(): string | null {
-    if (!this.latestWmsUrl) return null;
-    const url = new URL(this.latestWmsUrl);
-    const layer = url.searchParams.get('LAYERS');
-    if (!layer) return null;
-    const base = this.latestWmsUrl.split('?')[0];
-    const legend = `${base}?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=${encodeURIComponent(layer)}`;
-    return legend;
   }
 
   private updateUrlFromMap(): void {
@@ -286,7 +262,5 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.baseMapSubscription?.unsubscribe();
     this.ogcParamsSubscription?.unsubscribe();
-    this.opacitySubscription?.unsubscribe();
-    this.wmsUrlSubscription?.unsubscribe();
   }
 }

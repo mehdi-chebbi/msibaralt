@@ -28,7 +28,6 @@ import { GeometryService } from '../../services/geometry.service'; // ✅ Add Ge
     MatSelectModule,
     MatButtonModule,
     DatePipe,
-    DecimalPipe,
     NgIf,
     NgForOf,
   ],
@@ -52,16 +51,10 @@ export class OgcViewComponent {
 
   cloud_percentage: number | null = 25;
 
-  overlayOpacity: number = 1; // 0..1
-
   constructor(
     private ogcService: OgcService,
     private geometryService: GeometryService // ✅ Injected
   ) {}
-
-  onOpacityChange() {
-    this.ogcService.setOpacity(this.overlayOpacity);
-  }
 
   onSubmit() {
     const missingFields: string[] = [];

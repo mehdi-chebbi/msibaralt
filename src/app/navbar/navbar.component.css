@@ -14,14 +14,9 @@
 }
 
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand img { height: 36px; width: auto; }
-.brand span { font-weight: 600; color: #1f2937; }
+.brand img { height: 48px; width: auto; }
+.brand span { font-weight: 700; color: #1f2937; font-size: 18px; }
 
 .links { list-style: none; display: flex; gap: 16px; margin: 0; padding: 0; }
-.links a { color: #111827; text-decoration: none; padding: 6px 10px; border-radius: 6px; }
+.links a { color: #111827; text-decoration: none; padding: 8px 12px; border-radius: 8px; }
 .links a.active, .links a:hover { background: #f3f4f6; }
-
-.actions { display: flex; align-items: center; gap: 8px; }
-.actions .share { border: 1px solid rgba(0,0,0,0.15); background: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
-.actions .share:hover { background: #f3f4f6; }
-.actions .copied { color: #059669; font-size: 12px; }
