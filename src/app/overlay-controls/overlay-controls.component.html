@@ -1,0 +1,42 @@
+<div class="overlay-toolbar">
+  <button (click)="toggleLayers()" [class.active]="showLayersPanel" title="Base maps">
+    🗺️
+  </button>
+  <button (click)="toggleOgc()" [class.active]="showOgcPanel" title="Explore Africa">
+    🔎
+  </button>
+  <button (click)="toggleStats()" [class.active]="showStatsPanel" title="Statistics">
+    📈
+  </button>
+</div>
+
+<!-- Panels -->
+<div class="panel" *ngIf="showLayersPanel">
+  <div class="panel-header">
+    <div class="title">Base Maps</div>
+    <button class="close" (click)="closeAll()" aria-label="Close">✕</button>
+  </div>
+  <div class="panel-body">
+    <app-base-map></app-base-map>
+  </div>
+</div>
+
+<div class="panel" *ngIf="showOgcPanel">
+  <div class="panel-header">
+    <div class="title">Explore Africa</div>
+    <button class="close" (click)="closeAll()" aria-label="Close">✕</button>
+  </div>
+  <div class="panel-body">
+    <app-ogc-view></app-ogc-view>
+  </div>
+</div>
+
+<div class="panel" *ngIf="showStatsPanel">
+  <div class="panel-header">
+    <div class="title">Statistics</div>
+    <button class="close" (click)="closeAll()" aria-label="Close">✕</button>
+  </div>
+  <div class="panel-body">
+    <app-statistiques></app-statistiques>
+  </div>
+</div>

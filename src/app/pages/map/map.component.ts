@@ -5,12 +5,12 @@ import { Subscription } from 'rxjs';
 import { BaseMapService } from '../../services/base-map.service';
 import { OgcService, OgcParams } from '../../services/ogc.service';
 import { GeometryService } from '../../services/geometry.service'; // ✅ NEW IMPORT
-import { SidebarComponent } from '../../sidebar/sidebar.component';
+import { OverlayControlsComponent } from '../../overlay-controls/overlay-controls.component';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [SidebarComponent],
+  imports: [OverlayControlsComponent],
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
 })
