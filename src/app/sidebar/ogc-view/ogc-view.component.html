@@ -69,7 +69,7 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-raised-button color="accent" (click)="logWmsUrl()" style="width: 100%">
+  <button mat-raised-button color="accent" (click)="downloadMapAsImage()" style="width: 100%" [disabled]="downloading">
     Download Image
   </button>
 </div>
