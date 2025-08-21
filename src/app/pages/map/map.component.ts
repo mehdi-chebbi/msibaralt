@@ -65,21 +65,27 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         attribution: 'Copernicus Data Space Ecosystem',
         version: '1.3.0',
         crs: L.CRS.EPSG3857,
+        crossOrigin: true,
       }),
       'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
+        crossOrigin: true,
       }),
       'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles © Esri'
+        attribution: 'Tiles © Esri',
+        crossOrigin: true,
       }),
       'Dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
         attribution: '&copy; CARTO',
+        crossOrigin: true,
       }),
       'Light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
         attribution: '&copy; CARTO',
+        crossOrigin: true,
       }),
       'Topographic': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenTopoMap contributors',
+        crossOrigin: true,
       }),
     };
 
@@ -255,7 +261,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     this.imageOverlay = L.imageOverlay(imageUrl, this.lastDrawnBounds, {
-      opacity: 1
+      opacity: 1,
+      crossOrigin: true,
     });
     this.imageOverlay.addTo(this.map);
 

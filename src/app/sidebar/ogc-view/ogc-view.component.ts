@@ -15,6 +15,7 @@ import { DatePipe, NgIf, NgForOf, DecimalPipe } from '@angular/common';
 
 import { OgcService, OgcParams } from '../../services/ogc.service';
 import { GeometryService } from '../../services/geometry.service'; // ✅ Add GeometryService
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-ogc-view',
@@ -129,5 +130,44 @@ export class OgcViewComponent {
     } else {
       console.warn('Unsupported format:', this.selectedFormat);
     }
+  }
+
+  downloadMapAsImage() {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) {
+      this.snackBar.open('Map not found on page.', 'Close', { duration: 2500 });
+      return;
+    }
+
+    // Temporarily hide Leaflet vector SVG overlays (polygons) to avoid misalignment in export
+    const svgElements = Array.from(document.querySelectorAll('.leaflet-overlay-pane svg')) as HTMLElement[];
+    const previousVisibility = svgElements.map(el => el.style.visibility);
+    svgElements.forEach(el => { el.style.visibility = 'hidden'; });
+
+    this.downloading = true;
+    html2canvas(mapEl, { useCORS: true, allowTaint: false, logging: false, scale: Math.min(2, window.devicePixelRatio || 1) })
+      .then(canvas => new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Failed to create image blob')), 'image/png');
+      }))
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'map.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.snackBar.open('Map downloaded', '', { duration: 1500 });
+      })
+      .catch((err) => {
+        console.error('Map download failed:', err);
+        this.snackBar.open('Download failed. Check CORS and try again.', 'Close', { duration: 3000 });
+      })
+      .finally(() => {
+        // Restore polygon/vector visibility
+        svgElements.forEach((el, idx) => { el.style.visibility = previousVisibility[idx] || ''; });
+        this.downloading = false;
+      });
   }
 }
