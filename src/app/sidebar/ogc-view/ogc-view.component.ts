@@ -139,6 +139,11 @@ export class OgcViewComponent {
       return;
     }
 
+    // Temporarily hide Leaflet vector SVG overlays (polygons) to avoid misalignment in export
+    const svgElements = Array.from(document.querySelectorAll('.leaflet-overlay-pane svg')) as HTMLElement[];
+    const previousVisibility = svgElements.map(el => el.style.visibility);
+    svgElements.forEach(el => { el.style.visibility = 'hidden'; });
+
     this.downloading = true;
     html2canvas(mapEl, { useCORS: true, allowTaint: false, logging: false, scale: Math.min(2, window.devicePixelRatio || 1) })
       .then(canvas => new Promise<Blob>((resolve, reject) => {
@@ -160,6 +165,8 @@ export class OgcViewComponent {
         this.snackBar.open('Download failed. Check CORS and try again.', 'Close', { duration: 3000 });
       })
       .finally(() => {
+        // Restore polygon/vector visibility
+        svgElements.forEach((el, idx) => { el.style.visibility = previousVisibility[idx] || ''; });
         this.downloading = false;
       });
   }
