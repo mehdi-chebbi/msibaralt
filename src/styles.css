@@ -1,8 +1,68 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+:root {
+  --color-bg: #070b14;
+  --color-surface: #0d1220;
+  --color-elevated: #11182a;
+  --color-border: rgba(255,255,255,0.10);
+  --color-text: #e6e9f2;
+  --color-text-muted: #A6B1C2;
+  --color-primary: #7c9cf8; /* soft indigo */
+  --color-primary-contrast: #0b1220;
+  --shadow-soft: 0 12px 32px rgba(0,0,0,0.45);
+
+  --accent-violet: #a78bfa;
+  --accent-blue: #60a5fa;
+  --accent-emerald: #34d399;
+  --gradient-accent: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-blue) 50%, var(--accent-emerald) 100%);
+
+  --glass-bg: rgba(17,24,39,0.45);
+  --glass-border: rgba(255,255,255,0.14);
+  --glass-blur: 10px;
+}
+
+/* Optional light theme */
+:root.light {
+  --color-bg: #eef2f7;
+  --color-surface: #ffffff;
+  --color-elevated: #ffffff;
+  --color-border: rgba(0,0,0,0.10);
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-primary: #3b82f6;
+  --color-primary-contrast: #ffffff;
+  --shadow-soft: 0 12px 32px rgba(0,0,0,0.08);
+  --glass-bg: rgba(255,255,255,0.65);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-blur: 12px;
+}
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background:
+    radial-gradient(1200px 800px at 0% -10%, rgba(96,165,250,0.12), transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, rgba(167,139,250,0.12), transparent 55%),
+    radial-gradient(900px 700px at 100% 110%, rgba(52,211,153,0.10), transparent 55%),
+    var(--color-bg);
+  color: var(--color-text);
+}
+
+* { box-sizing: border-box; }
+
+a { color: var(--accent-blue); }
+
+a:hover { color: var(--accent-violet); }
+
+.card, .surface {
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent-blue) 35%, transparent);
 }
 
 

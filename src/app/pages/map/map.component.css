@@ -19,13 +19,16 @@
   left: 50%;
   bottom: 12px;
   transform: translateX(-50%);
-  background: rgba(17,24,39,0.92);
-  color: #f9fafb;
-  padding: 6px 10px;
-  border-radius: 10px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  background: color-mix(in srgb, var(--color-elevated) 90%, transparent);
+  color: var(--color-text);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 35%, var(--glass-border));
+  box-shadow: 0 10px 28px rgba(0,0,0,0.50);
   font-size: 12px;
   letter-spacing: 0.2px;
   z-index: 850;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
