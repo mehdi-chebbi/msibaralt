@@ -19,11 +19,11 @@
   left: 50%;
   bottom: 12px;
   transform: translateX(-50%);
-  background: rgba(17,24,39,0.92);
-  color: #f9fafb;
+  background: color-mix(in srgb, var(--color-elevated) 85%, black);
+  color: var(--color-text);
   padding: 6px 10px;
   border-radius: 10px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.45);
   font-size: 12px;
   letter-spacing: 0.2px;
   z-index: 850;

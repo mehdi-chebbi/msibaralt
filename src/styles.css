@@ -1,8 +1,48 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+:root {
+  --color-bg: #0b1220;
+  --color-surface: #121a2b;
+  --color-elevated: #171f31;
+  --color-border: rgba(255,255,255,0.08);
+  --color-text: #e5e7eb;
+  --color-text-muted: #b6beca;
+  --color-primary: #60a5fa;
+  --color-primary-contrast: #0b1220;
+  --shadow-soft: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+/* Light theme (optional) */
+:root.light {
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-elevated: #ffffff;
+  --color-border: rgba(0,0,0,0.08);
+  --color-text: #111827;
+  --color-text-muted: #4b5563;
+  --color-primary: #2563eb;
+  --color-primary-contrast: #ffffff;
+  --shadow-soft: 0 8px 24px rgba(0,0,0,0.08);
+}
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a { color: var(--color-primary); }
+
+.card, .surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
 }
 
 

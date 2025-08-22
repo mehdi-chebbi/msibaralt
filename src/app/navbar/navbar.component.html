@@ -1,9 +1,13 @@
 <nav class="navbar" aria-label="App Navigation">
-  <div class="brand">
-    <img src="https://www.oss-online.org/sites/default/files/logo-h.png" alt="Logo" />
-    <span>FrontMisbar</span>
+  <div class="nav-section left">
+    <img class="logo" src="https://www.oss-online.org/sites/default/files/logo-h.png" alt="Logo" />
   </div>
-  <ul class="links">
+
+  <div class="nav-section center" aria-hidden="true">
+    <span class="app-name">FrontMisbar</span>
+  </div>
+
+  <ul class="nav-section right links">
     <li><a routerLink="/map" routerLinkActive="active">Map</a></li>
     <li><a routerLink="/about" routerLinkActive="active">About</a></li>
   </ul>
